@@ -1,0 +1,122 @@
+/* Queries */
+
+/*Basic*/
+
+1.{
+SELECT * 
+FROM city
+WHERE CountryCode = 'GRC'
+ORDER BY Population DESC
+LIMIT 5;
+
+SELECT * 
+FROM countrylanguage
+WHERE language = 'Greek'
+ORDER BY percentage DESC
+LIMIT 2;
+
+SELECT * 
+FROM countrylanguage
+WHERE language = 'Greek'
+ORDER BY percentage DESC
+LIMIT 3, 2;
+
+-- exercise01
+SELECT contactFirstName, contactLastName
+FROM customers;
+
+-- exercise02
+SELECT CONCAT(contactFirstName, ' ',contactLastName) AS contact_person
+FROM customers;
+
+-- exercise03
+SELECT DISTINCT country
+FROM customers;
+
+-- exercise04
+SELECT AVG(creditLimit), MIN(creditLimit), MAX(creditLimit)
+FROM customers;
+}
+
+
+/*where*/
+
+2.{
+-- exercise02
+SELECT customerName
+FROM customers
+WHERE contactFirstName = 'Elizabeth';
+
+-- exercise03
+SELECT customerName
+FROM customers
+WHERE creditLimit > 100000;
+
+-- exercise04
+SELECT CONCAT(firstName, ' ', lastName) AS full_name
+FROM employees
+WHERE jobTitle <> 'sales rep'
+
+-- exercise05
+SELECT *
+FROM payments
+WHERE amount BETWEEN 5000 AND 15000
+  AND paymentDate BETWEEN '2004-01-01' AND '2004-12-31';
+  
+-- exercise06
+SELECT customerName, country, creditLimit 
+FROM customers
+WHERE (country = 'USA' OR country = 'Spain' OR country = 'Italy')
+  AND creditLimit BETWEEN 100000 AND 120000
+ORDER BY country, creditLimit DESC;
+
+-- exercise07
+SELECT * 
+FROM country
+WHERE name IN ('Afghanistan', 'Czech Republic', 'Nigeria');
+
+SELECT name
+FROM city
+WHERE CountryCode IN ('AFG', 'CZE', 'NGA')
+ORDER BY name;
+
+-- exercise08
+SELECT DISTINCT GovernmentForm
+FROM country
+WHERE GovernmentForm NOT IN ('Republic', 'Constitutional Monarchy')
+ORDER BY GovernmentForm;
+
+SELECT name AS Country, IndepYear AS 'Independence Year', 
+       LifeExpectancy AS 'Life Expectancy', Continent,
+	   Population, SurfaceArea AS Surface
+FROM country
+WHERE IndepYear IS NULL
+  AND Continent IN ('Africa', 'Asia')
+  AND Population >= 100000
+  AND (SurfaceArea < 10000 OR SurfaceArea > 100000)
+ORDER BY Population DESC;
+
+-- exercise 10
+SELECT SUM(quantityOrdered * priceEach) AS total_price
+FROM orderdetails
+WHERE orderNumber BETWEEN 10100 AND 10199;
+
+-- exercise 11
+SELECT productName
+FROM products
+WHERE productLine IN ('Vintage Cars', 'Planes')
+  AND productScale IN ('1:18', '1:32', '1:50')
+ORDER BY buyPrice DESC
+LIMIT 5;
+
+-- exercise 12
+SELECT city, phone, postalCode
+FROM offices
+WHERE state IS NULL;
+
+SELECT city, phone, postalCode
+FROM offices
+WHERE state IS NULL
+  AND country IN ('Japan', 'UK');
+}
+
