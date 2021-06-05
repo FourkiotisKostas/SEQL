@@ -1,0 +1,110 @@
+/*Queries.Inner.Join*/
+
+1.{
+
+SELECT CONCAT(e.firstName, ' ', e.lastName) AS full_name,
+	o.city AS city
+FROM employees e JOIN offices o
+	ON e.officeCode = o.officeCode;
+    
+SELECT CONCAT(e.firstName, ' ', e.lastName) AS full_name,
+	o.city AS city
+FROM employees e, offices o
+WHERE e.officeCode = o.officeCode;
+
+SELECT CONCAT(employees.firstName, ' ', employees.lastName) AS full_name,
+	offices.city AS city
+FROM employees JOIN offices
+	ON employees.officeCode = offices.officeCode;
+    
+SELECT CONCAT(employees.firstName, ' ', employees.lastName) AS full_name,
+	offices.city AS city
+FROM employees, offices
+WHERE employees.officeCode = offices.officeCode;
+
+-- exercise 02
+SELECT c.name as Country, cl.language, cl.Percentage
+FROM countrylanguage cl JOIN country c
+	ON cl.countryCode = c.Code;
+    
+-- exercise 03
+SELECT p.productName, 
+		pl.textDescription AS productLine, 
+		p.quantityInStock
+FROM products p JOIN productlines pl
+	ON p.productLine = pl.productLine;
+
+-- exercise 04
+SELECT c.customerName AS customer,
+	c.city,
+    SUM(p.amount) AS total_amount, 
+    c.creditLimit
+FROM payments p JOIN customers c
+	ON p.customerNumber = c.customerNumber
+WHERE c.country IN ('France', 'USA')
+GROUP BY p.customerNumber
+ORDER BY creditLimit DESC
+
+-- exercise 05
+SELECT l.name, COUNT(*) AS total_movies
+FROM film f JOIN language l
+	ON f.language_id = l.language_id
+GROUP BY f.language_id;
+
+-- exercise 06 
+SELECT CONCAT(a.first_name, ' ', a.last_name) AS actor_name,
+	   COUNT(*) AS total_movies
+FROM film_actor fa 
+	JOIN actor a ON fa.actor_id = a.actor_id 
+GROUP BY a.actor_id
+ORDER BY 2 DESC;
+
+-- 7.1
+SELECT * 
+FROM payments p JOIN orders o
+	ON p.paymentDate > o.orderDate;
+    
+-- 7.2
+SELECT * 
+FROM customers c JOIN employees e
+	ON c.contactFirstName = e.firstName AND
+       c.contactLastName = e.lastName;
+
+-- 7.3
+SELECT * 
+FROM customers c JOIN employees e
+	ON NOT (c.contactFirstName > e.firstName OR
+       c.contactLastName <> e.lastName);
+
+-- 7.4
+SELECT * 
+FROM employees NATURAL JOIN offices;
+
+
+-- exercise 08
+SELECT f.title AS movie_name
+FROM film_category fc 
+	JOIN film f ON fc.film_id = f.film_id
+    JOIN category c ON fc.category_id = c.category_id
+WHERE NOT f.rating IN ('R', 'NC-17')
+	AND f.length BETWEEN 60 AND 90
+    AND f.description REGEXP 'boring|love|documentary'
+    AND f.replacement_cost <= 14.00
+    AND c.name IN ('Travel', 'Family', 'Comedy', 'Classics');
+    
+-- exercise 09
+SELECT DISTINCT c.name
+FROM film_actor fa 
+	JOIN actor a ON a.actor_id = fa.actor_id
+    JOIN film f ON f.film_id = fa.film_id
+    JOIN film_category fc ON fc.film_id = f.film_id
+    JOIN category c ON c.category_id = fc.category_id
+WHERE a.first_name = 'JULIA' 
+   AND a.last_name = 'FAWCETT' 
+}
+
+
+
+
+
+
