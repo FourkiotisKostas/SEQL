@@ -1,0 +1,42 @@
+SELECT o.orderNumber, c.customerName, ROUND(SUM(quantityOrdered*priceEach)) AS item_price
+FROM orders o 
+	JOIN customers c ON o.customerNumber = c.customerNumber
+    JOIN orderdetails od ON o.orderNumber = od.orderNumber
+GROUP BY o.orderNumber
+
+--
+SELECT productName, quantityInStock, buyPrice, 
+	round(1.1*power(buyPrice, 1.1),2) AS sellPrice, 
+    round((round(1.1*power(buyPrice, 1.1),2)-buyPrice)*quantityInStock,2) AS profit
+FROM products;
+
+--
+SELECT customerName 
+FROM customers
+WHERE LENGTH(customerName) = (
+	SELECT MAX(LENGTH(customerName))
+    FROM customers
+);
+
+--
+
+SELECT IF(RIGHT(RTRIM(customerName),1)=',',
+		LEFT(customerName, LENGTH(customerName)-1), 
+         customerName) AS customerName
+FROM (SELECT 
+	CASE SUBSTRING_INDEX(customerName, ' ', -1)
+		WHEN 'Ltd.' THEN
+			LEFT(customerName, LENGTH(customerName)-5)
+		WHEN 'Co.' THEN
+			LEFT(customerName, LENGTH(customerName)-4)
+        WHEN 'Inc.' THEN
+			LEFT(customerName, LENGTH(customerName)-5)
+		ELSE customerName
+	END AS customerName
+FROM customers) AS cust;
+
+SELECT SUBSTRING(customerName, 1, LOCATE(' ', customerName)-1),
+	   SUBSTRING(customerName, LOCATE(' ', customerName)+1)
+FROM customers;
+
+--

@@ -1,0 +1,72 @@
+-- exercise 01
+SELECT f.title AS MOVIE
+FROM film f LEFT JOIN inventory i
+	ON f.film_id = i.film_id
+GROUP BY f.film_id
+HAVING count(i.inventory_id)=0
+ORDER BY 1;
+
+-- exercise 01
+SELECT f.title AS MOVIE, count(r.rental_id) AS TOTAL_RENTALS
+FROM film f 
+	LEFT JOIN inventory i ON f.film_id = i.film_id
+    LEFT JOIN rental r ON i.inventory_id = r.inventory_id
+GROUP BY f.film_id
+ORDER BY 2 DESC
+
+--
+
+SELECT r.rental_date, p.amount
+FROM rental r LEFT JOIN payment p
+	ON r.rental_id = p.rental_id
+UNION
+SELECT r.rental_date, p.amount
+FROM rental r RIGHT JOIN payment p
+	ON r.rental_id = p.rental_id
+
+--
+
+-- exercise 04
+SELECT CONCAT(e2.firstName, ' ', e2.lastName) AS supervisor,
+       COUNT(*) AS employees
+FROM employees e1 JOIN employees e2
+	ON e1.reportsTo = e2.employeeNumber
+GROUP BY supervisor;
+
+-- exercise 05
+SELECT DISTINCT o.city
+FROM employees e1 
+	RIGHT JOIN employees e2 ON e1.reportsTo = e2.employeeNumber
+    JOIN offices o ON e2.officeCode = o.officeCode
+GROUP BY e2.employeeNumber
+HAVING COUNT(e1.employeeNumber)=0;
+
+-- exercise06.1
+SELECT CONCAT(c.first_name, ' ', c.last_name) AS name,
+	active, email, SUM(p.amount) AS total_amount
+FROM payment p JOIN customer c
+	ON p.customer_id = c.customer_id
+GROUP BY c.customer_id
+ORDER BY total_amount DESC
+LIMIT 10;
+
+-- exercise06.2
+SELECT CONCAT(c.first_name, ' ', c.last_name) AS name,
+	active, email, SUM(p.amount) AS total_amount
+FROM payment p RIGHT JOIN customer c
+	ON p.customer_id = c.customer_id
+GROUP BY c.customer_id
+ORDER BY total_amount ASC
+LIMIT 100;
+
+-- exercise 07
+SELECT cn.country, SUM(p.amount) AS total_amount
+FROM payment p 
+	JOIN customer c ON c.customer_id = p.customer_id
+    JOIN address a ON c.address_id = a.address_id
+    JOIN city ct ON a.city_id = ct.city_id
+    RIGHT JOIN country cn ON ct.country_id = cn.country_id
+GROUP BY cn.country_id
+ORDER BY total_amount DESC
+
+

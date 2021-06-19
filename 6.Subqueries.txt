@@ -1,0 +1,113 @@
+SELECT c.customerName, MAX(p.amount) AS total_amount
+FROM customers c JOIN payments p
+	ON c.customerNumber = p.customerNumber
+GROUP BY c.customerNumber
+ORDER BY 2 DESC;
+
+-- exercise 02
+SELECT productName, buyPrice
+FROM products
+WHERE buyPrice BETWEEN (
+		SELECT AVG(buyPrice)
+        FROM products
+	)
+    AND (
+   		SELECT MAX(buyPrice)
+        FROM products
+    )
+ORDER BY 2 DESC;
+
+-- exercise 02
+SELECT productName, buyPrice
+FROM products
+WHERE buyPrice >= (
+		SELECT AVG(buyPrice)
+        FROM products
+	)
+ORDER BY 2 DESC;
+
+
+-- exercise 03
+SELECT DISTINCT c.customerName
+FROM customers c
+	JOIN orders o ON c.customerNumber = o.customerNumber
+    JOIN orderdetails od ON od.orderNumber = o.orderNumber
+    JOIN products p ON p.productCode = od.productCode
+WHERE buyPrice >= (
+		SELECT AVG(buyPrice)
+        FROM products
+	)
+ORDER BY c.customerName;
+
+-- exercise 04
+SELECT CONCAT(firstName, ' ', lastName) AS supervisedSF
+FROM employees
+WHERE reportsTo IN 
+	(
+     SELECT employeeNumber
+	 FROM offices o JOIN employees e
+		 ON o.officeCode = e.officeCode
+	 WHERE o.city = 'San Francisco'
+	);
+    
+
+ SELECT CONCAT(e2.firstName, ' ', e2.lastName) AS supervisedSF
+ FROM offices o 
+	JOIN employees e ON o.officeCode = e.officeCode
+    JOIN employees e2 ON e2.reportsTo = e.employeeNumber
+ WHERE o.city = 'San Francisco';
+ 
+ 
+ -- exercise 05
+ SELECT customerNumber 
+FROM customers c
+WHERE NOT EXISTS 
+    (SELECT *
+	 FROM orders o 
+	 WHERE o.customerNumber = c.customerNumber);
+
+SELECT c.customerNumber
+FROM customers c 
+	LEFT JOIN orders o ON c.customerNumber = o.customerNumber
+WHERE o.orderNumber IS NULL;
+
+
+--
+
+
+SELECT name AS country, indepYear
+FROM country
+WHERE indepYear < ALL
+(
+ SELECT indepYear
+ FROM country
+ WHERE Continent = 'Europe'
+   AND IndepYear IS NOT NULL
+);
+
+SELECT name AS country, indepYear
+FROM country
+WHERE indepYear < 
+(
+ SELECT MIN(indepYear)
+ FROM country
+ WHERE Continent = 'Europe'
+   AND IndepYear IS NOT NULL
+);
+
+--
+
+ SELECT continent, count(*) AS cities
+FROM country cn
+	JOIN city ct ON cn.code = ct.countrycode
+GROUP BY continent
+HAVING cities < (
+	SELECT COUNT(*)
+	FROM country cn
+		JOIN city ct ON cn.code = ct.countrycode
+	WHERE cn.name IN ('India', 'China')
+);
+
+
+
+
